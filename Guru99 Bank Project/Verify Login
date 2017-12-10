@@ -1,0 +1,52 @@
+package guru99.project.selenium;
+
+import org.testng.annotations.Test;
+import org.testng.annotations.BeforeTest;
+
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.annotations.AfterTest;
+
+public class LoginSection {
+	static public WebDriver driver = null;
+  @Test
+  public void VerifyLogin() {
+	  try {
+		  driver.manage().window().maximize();
+		  driver.manage().timeouts().implicitlyWait(3,TimeUnit.SECONDS);
+		  
+		  driver.findElement(By.xpath("//input[@name='uid']")).sendKeys("mngr108765");
+		  driver.findElement(By.xpath("//input[@name='password']")).sendKeys("uparene");
+		  driver.findElement(By.xpath("//input[@name='btnLogin']")).click();
+		  
+		  if(driver.findElement(By.xpath("//h2[@class='barone']")).isDisplayed()) {
+			  System.out.println("Login was successful!");
+		  }
+		  else {
+			  System.out.println("Check your userid and password");
+		  }
+		  
+	  }
+	  catch(Exception ex) {
+		  System.out.println("Login failed due to : " + ex.getMessage());
+	  }
+
+	  
+	  
+  }
+  @BeforeTest
+  public void beforeTest() {
+	  System.setProperty("webdriver.chrome.driver","C:\\Users\\Umang Bhatia\\Documents\\Selenium Drivers\\chrome driver\\chromedriver.exe");
+	  driver = new ChromeDriver();
+	  driver.navigate().to("http://www.demo.guru99.com/V4/");
+  }
+
+  @AfterTest
+  public void afterTest() {
+	  driver.close();
+  }
+
+}
