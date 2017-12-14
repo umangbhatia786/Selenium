@@ -1,12 +1,19 @@
 package guru99.project.selenium;
 
 import org.testng.annotations.Test;
+import java.util.*;
+import jxl.Cell;
+import jxl.Sheet;
+import jxl.Workbook;
+
 import org.testng.annotations.BeforeTest;
 
+import java.io.FileInputStream;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.annotations.AfterTest;
 
@@ -16,20 +23,54 @@ public class LoginSection {
   public void VerifyLogin() {
 	  try {
 		  driver.manage().window().maximize();
-		  driver.manage().timeouts().implicitlyWait(3,TimeUnit.SECONDS);
+		  driver.manage().timeouts().implicitlyWait(Util.WAIT_TIME, TimeUnit.SECONDS);
 		  
-		  driver.findElement(By.xpath("//input[@name='uid']")).sendKeys("mngr108765");
-		  driver.findElement(By.xpath("//input[@name='password']")).sendKeys("uparene");
-		  driver.findElement(By.xpath("//input[@name='btnLogin']")).click();
+		  String FilePath = Util.FILE_PATH;
+		  FileInputStream fs = new FileInputStream(FilePath);
+		  Workbook workbook = Workbook.getWorkbook(fs);
+		  Sheet sheet = workbook.getSheet(0);
 		  
-		  if(driver.findElement(By.xpath("//h2[@class='barone']")).isDisplayed()) {
-			  System.out.println("Login was successful!");
+		  WebElement useridBox = driver.findElement(By.xpath("//input[@name='uid']"));
+		  WebElement pwdBox = driver.findElement(By.xpath("//input[@name='password']"));
+		  WebElement submitBtn = driver.findElement(By.xpath("//input[@name='btnLogin']"));
+		  
+		  HashMap<String,String> credentials = new HashMap<String,String>();
+		  credentials.put("xyz123","uparene");
+		  credentials.put("mngr108765","upar789");
+		  credentials.put("mngr108765","uparene");
+		  
+		  for(String userName : credentials.keySet()) {
+			  String password = credentials.get(userName);
+			  useridBox.sendKeys(userName);
+			  pwdBox.sendKeys(password);
+			  submitBtn.click();
+			  
+			  if(userName == "xyz123" && password == "uparene" && driver.findElement(By.xpath("//td[@style='color: green']")).isDisplayed()) {
+				  System.out.println("Test Case 1 has failed");
+			  }
+			  
+			  else {
+				  System.out.println("Test Case 1 has passed");
+			  }
+			  
+			  if(userName == "mngr108765" && password == "upar789" && driver.findElement(By.xpath("//td[@style='color: green']")).isDisplayed()) {
+				  System.out.println("Test Case 2 has failed");
+			  }
+			  
+			  else {
+				  System.out.println("Test Case 2 has passed");
+			  }
+			  
+			  if(userName == "mngr108765" && password == "uparene" && driver.findElement(By.xpath("//td[@style='color: green']")).isDisplayed()) {
+				  System.out.println("Test Case 3 has passed");
+			  }
+			  
+			  else {
+				  System.out.println("Test Case 3 has failed");
+			  }
 		  }
-		  else {
-			  System.out.println("Check your userid and password");
-		  }
 		  
-	  }
+	  } 
 	  catch(Exception ex) {
 		  System.out.println("Login failed due to : " + ex.getMessage());
 	  }
@@ -39,9 +80,9 @@ public class LoginSection {
   }
   @BeforeTest
   public void beforeTest() {
-	  System.setProperty("webdriver.chrome.driver","C:\\Users\\Umang Bhatia\\Documents\\Selenium Drivers\\chrome driver\\chromedriver.exe");
+	  System.setProperty("webdriver.chrome.driver",Util.CHROME_PATH);
 	  driver = new ChromeDriver();
-	  driver.navigate().to("http://www.demo.guru99.com/V4/");
+	  driver.navigate().to(Util.BASE_URL);
   }
 
   @AfterTest
