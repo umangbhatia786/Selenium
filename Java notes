@@ -177,3 +177,107 @@ s1.display();
 s2.display();  
 }}  
 
+
+********************Java Inheritence**********************
+
+
+
+
+////////////Inheritance (IS-A) ///////////////////
+
+
+Inheritance in Java is a mechanism through which the child class acquires all the properties and behaviours
+of parent object.
+
+ ##Types of Inheritance in Java##
+
+  1) Single 
+  2) Multilevel 
+  3) Heirarchical
+  4) Multiple --> not supported by Java through classes
+  5) Hybrid
+
+
+
+##Q) Why multiple inheritance is not supported in java? ##
+
+
+To reduce the complexity and simplify the language, multiple inheritance is not supported in java.
+
+class A{  
+void msg(){System.out.println("Hello");}  
+}  
+class B{  
+void msg(){System.out.println("Welcome");}  
+}  
+class C extends A,B{//suppose if it were  
+   
+ Public Static void main(String args[]){  
+   C obj=new C();  
+   obj.msg();//Now which msg() method would be invoked?  --> Method msg() is present in both Class A and B , Hence the compiler will get confused about which method to invoke
+}  
+}  
+
+
+****************Java Aggregation*******************************
+
+Aggregaton is also known as HAS-A relationship . In Aggregation object of one class is used as an instance variable in the other.
+In Has-A relation and object can be passed as an arguement 
+
+
+##Example of Aggregation##
+
+
+public class Address {
+		
+	String city,state,country;
+	
+
+	public Address(String city, String state, String country) {
+		this.city = city;
+		this.state = state;
+		this.country = country;
+	}
+}
+
+
+
+
+public class Emp {
+	
+	int id;
+	String name;
+	Address address;
+	static int count = 1;
+	public Emp(int id, String name, Address address) {
+		this.id = id;
+		this.name = name;
+		this.address = address;
+		
+	}
+	
+	public void display() {
+		System.out.println(count + "\t" +id + "\t" + name);
+		System.out.println(address.city + "\t" + address.state + "\t" + address.country);
+		count++;
+		
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Address add1 = new Address("Kanpur","U.P","India");
+		Address add2 = new Address("Pune","Maharashtra","India");
+		
+		Emp emp1 = new Emp(749777,"Umang",add1);
+		Emp emp2 = new Emp(749344,"Pranjal",add2);
+		
+		emp1.display();
+		emp2.display();
+		
+
+	}
+
+}
+
+
+
