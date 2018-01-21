@@ -32,7 +32,7 @@ public class TestCase2 {
 	  String listPrice = driver.findElement(By.xpath("//*[@id='product-price-1']/span")).getText();
 	  System.out.println(listPrice);
 	  
-	  //clicking on Sony Xperia phone link
+	  //clicking on Sony Xperia's phone link
 	  
 	  driver.findElement(By.className("product-image")).click();
 	  
