@@ -32,7 +32,7 @@ public class TestCase2 {
 	  String listPrice = driver.findElement(By.xpath("//*[@id='product-price-1']/span")).getText();
 	  System.out.println(listPrice);
 	  
-	  //clicking on Sony Xperia's phone link
+	  //clicking on Sony Xperia phone link
 	  
 	  driver.findElement(By.className("product-image")).click();
 	  
@@ -45,12 +45,13 @@ public class TestCase2 {
 	  
 	  try {
 		  AssertJUnit.assertEquals(listPrice, productPrice);
-		  System.out.println("Cost of Sony Xperia on List page and Product page is equal");
+		  System.out.println("Test Case 2 : Passed");
 		  
 	  }
 	  
 	  catch(Exception e) {
-		  verificationErrors.append(e.toString());
+		  System.out.println(e.getMessage());
+		  System.out.println("Test Case 2 : Failed");
 	  }
 	  
   }
