@@ -1,0 +1,44 @@
+package gu99.eCommerce;
+
+import java.io.File;
+
+public class Util {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+	/* Get the latest file from a specific directory*/
+	private File getLatestFilefromDir(String dirPath){
+	    File dir = new File(dirPath);
+	    File[] files = dir.listFiles();
+	    if (files == null || files.length == 0) {
+	        return null;
+	    }
+	
+	    File lastModifiedFile = files[0];
+	    for (int i = 1; i < files.length; i++) {
+	       if (lastModifiedFile.lastModified() < files[i].lastModified()) {
+	           lastModifiedFile = files[i];
+	       }
+	    }
+	    return lastModifiedFile;
+	}
+	
+	/* Check the file from a specific directory with extension */
+	static boolean isFileDownloaded_Ext(String dirPath, String ext){
+		boolean flag=false;
+	    File dir = new File(dirPath);
+	    File[] files = dir.listFiles();
+	    if (files == null || files.length == 0) {
+	        flag = false;
+	    }
+	    
+	    for (int i = 1; i < files.length; i++) {
+	    	if(files[i].getName().contains(ext)) {
+	    		flag=true;
+	    	}
+	    }
+	    return flag;
+	}
+}
