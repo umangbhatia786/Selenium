@@ -1,0 +1,93 @@
+package gu99.eCommerce;
+
+import org.testng.annotations.Test;
+import org.testng.annotations.BeforeMethod;
+
+import static org.testng.Assert.assertEquals;
+
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.Select;
+import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
+
+public class TestCase11 {
+	static public WebDriver driver = null;
+	public String baseURL = "http://live.guru99.com/index.php/backendlogin/";
+	
+  @Test
+  public void Test10() {
+	  driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		//navigating to the given URL
+		  driver.navigate().to(baseURL);
+		  
+	   //Logging into the backend admin page
+		  driver.findElement(By.id("username")).sendKeys("user01");
+		  driver.findElement(By.xpath("//input[@id='login']")).sendKeys("guru99com");
+		  driver.findElement(By.xpath("//input[@title='Login']")).click();
+	
+		//Closing the incoming message
+		  for (String handle : driver.getWindowHandles()) {                                             
+		    	driver.switchTo().window(handle);
+		    	} 	
+		  driver.findElement(By.xpath("//*[@id='message-popup-window']/div[1]/a/span")).click();
+		  
+		//Choosing Sales --> Orders Menu
+		  driver.findElement(By.xpath("//*[@id='nav']/li[1]/a/span")).click();
+		  driver.findElement(By.xpath("//*[@id='nav']/li[1]/ul/li[1]/a/span")).click();
+		  
+			for (String handle : driver.getWindowHandles()) {                                             
+		    	driver.switchTo().window(handle);
+		    	} 	   
+			
+	  //Selecting from Status drop downlist and clicking on search
+		Select dlStatus = new Select(driver.findElement(By.xpath("//select[@id='sales_order_grid_filter_status']")));
+		dlStatus.selectByVisibleText("Canceled");
+		driver.findElement(By.xpath("//button[@title='Search']")).click();
+		
+	 //Choosing checkbox for the first order
+		driver.findElement(By.xpath("//input[@value='5272']")).click();
+	 
+	//Choosing from Action dropdown and Submiting the response
+		Select dlAction = new Select(driver.findElement(By.xpath("//select[@id='sales_order_grid_massaction-select']")));
+		dlAction.selectByValue("pdfinvoices_order");
+		driver.findElement(By.xpath("//button[@title='Submit']")).click();
+		
+    //Verification of Error message
+		String exMessage = "There are no printable documents related to selected orders.";
+		String actMessage = driver.findElement(By.xpath("//*[@id='messages']/ul/li/ul/li/span")).getText();
+		
+		try {
+			assertEquals(exMessage,actMessage);
+			System.out.println("Valid error message is displayed");
+		}
+		
+		catch (Exception ex) {
+			System.out.println("Invalid error message is displayed");
+			ex.printStackTrace();
+		}
+		
+   //Verify if file is downloaded or not
+		String downloadPath = "C:\\Users\\Umang Bhatia\\Downloads\\";
+		Assert.assertTrue(Util.isFileDownloaded_Ext(downloadPath, ".pdf"), "The requested file has not beem downloaded");
+	  
+  }
+  
+  @BeforeMethod
+  public void beforeMethod() {
+	  System.setProperty("webdriver.chrome.driver","C:\\Users\\Umang Bhatia\\Documents\\Selenium Drivers\\chrome driver\\chromedriver.exe");
+	  driver = new ChromeDriver();
+	  driver.manage().window().maximize();
+	  driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+  }
+
+  @AfterMethod
+  public void afterMethod() throws InterruptedException {
+	  Thread.sleep(3000);
+	  driver.quit();
+  }
+
+}
