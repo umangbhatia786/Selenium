@@ -1,0 +1,72 @@
+package gu99.eCommerce;
+
+import org.testng.annotations.Test;
+import org.testng.annotations.BeforeMethod;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.annotations.AfterMethod;
+
+public class TestCase14 {
+	static public WebDriver driver = null;
+  @Test
+  public void Test14() {
+	  driver.manage().timeouts().implicitlyWait(Util.IMPLICIT_WAIT, TimeUnit.SECONDS);
+		//navigating to the given URL
+		  driver.navigate().to(Util.URL);
+		  
+		//Clicking on Advanced Search
+		  driver.findElement(By.xpath("//a[@title='Advanced Search']")).click();
+		  
+		//Giving input in product price range textboxes and clicking on search
+		  driver.findElement(By.xpath("//input[@id='price']")).sendKeys(Util.PRICE_MIN);
+		  driver.findElement(By.xpath("//input[@id='price_to']")).sendKeys(Util.PRICE_MAX);
+		  driver.findElement(By.xpath("//*[@id='form-validate']/div[2]/button")).click();
+		  
+		//Printing the search results on Console
+		  List<WebElement> products1 = driver.findElements(By.tagName("h2"));
+		  List<WebElement> price1 = driver.findElements(By.className("price"));
+		  
+		  for(int i=0 ; i<products1.size() ; i++) {
+			  System.out.println(products1.get(i).getText() + " : " + price1.get(i).getText());
+		  }
+		  System.out.println();
+		  System.out.println("***** After modifying our search *****");
+		  System.out.println();
+		//Clicking on modify your search 
+		  driver.findElement(By.xpath("//*[@id='top']/body/div/div/div[2]/div/div[2]/div[2]/p/a")).click();
+		
+		//Giving price ranges again and fetching the output
+		  driver.findElement(By.xpath("//input[@id='price']")).sendKeys(Util.PRICE_MIN2);
+		  driver.findElement(By.xpath("//input[@id='price_to']")).sendKeys(Util.PRICE_MAX2);
+		  driver.findElement(By.xpath("//*[@id='form-validate']/div[2]/button")).click();
+		  
+		  List<WebElement> products2 = driver.findElements(By.tagName("h2"));
+		  List<WebElement> price2 = driver.findElements(By.className("price"));
+		  
+		  for(int i=0 ; i<products2.size() ; i++) {
+			  System.out.println(products2.get(i).getText() + " : " + price2.get(i).getText());
+		  }
+		}
+  
+  @BeforeMethod
+  public void beforeMethod() {
+	  System.setProperty(Util.DRIVER,Util.CHROMEDRIVER_PATH);
+	  driver = new ChromeDriver();
+	  driver.manage().window().maximize();
+	  driver.manage().timeouts().implicitlyWait(Util.IMPLICIT_WAIT, TimeUnit.SECONDS);
+	  
+  }
+
+  @AfterMethod
+  public void afterMethod() throws InterruptedException {
+	  Thread.sleep(Util.SLEEP_TIME);
+	  driver.quit();
+  }
+
+}
