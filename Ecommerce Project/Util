@@ -1,44 +1,137 @@
 package gu99.eCommerce;
 
-import java.io.File;
+import org.testng.annotations.Test;
+import org.testng.annotations.BeforeMethod;
 
-public class Util {
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.AssertJUnit;
+import org.testng.annotations.AfterMethod;
 
-	}
-	/* Get the latest file from a specific directory*/
-	private File getLatestFilefromDir(String dirPath){
-	    File dir = new File(dirPath);
-	    File[] files = dir.listFiles();
-	    if (files == null || files.length == 0) {
-	        return null;
-	    }
+public class TestCase13 {
+	static public WebDriver driver = null;
 	
-	    File lastModifiedFile = files[0];
-	    for (int i = 1; i < files.length; i++) {
-	       if (lastModifiedFile.lastModified() < files[i].lastModified()) {
-	           lastModifiedFile = files[i];
-	       }
-	    }
-	    return lastModifiedFile;
-	}
-	
-	/* Check the file from a specific directory with extension */
-	static boolean isFileDownloaded_Ext(String dirPath, String ext){
-		boolean flag=false;
-	    File dir = new File(dirPath);
-	    File[] files = dir.listFiles();
-	    if (files == null || files.length == 0) {
-	        flag = false;
-	    }
-	    
-	    for (int i = 1; i < files.length; i++) {
-	    	if(files[i].getName().contains(ext)) {
-	    		flag=true;
-	    	}
-	    }
-	    return flag;
-	}
+  @Test
+  public void Test13() throws InterruptedException {
+	  driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		//navigating to the given URL
+		  driver.navigate().to(Util.BACKENDURL);
+		  
+	   //Logging into the backend admin page
+		  driver.findElement(By.id("username")).sendKeys(Util.USERNAME);
+		  driver.findElement(By.xpath("//input[@id='login']")).sendKeys(Util.PASSWORD);
+		  driver.findElement(By.xpath("//input[@title='Login']")).click();
+		  
+		//Closing the incoming message
+		  for (String handle : driver.getWindowHandles()) {                                             
+		    	driver.switchTo().window(handle);
+		    	} 	
+		  driver.findElement(By.xpath("//*[@id='message-popup-window']/div[1]/a/span")).click();
+		  
+		//Choosing Sales --> Invoice Menu
+		  driver.findElement(By.xpath("//*[@id='nav']/li[1]/a/span")).click();
+		  driver.findElement(By.xpath("//*[@id='nav']/li[1]/ul/li[2]/a/span")).click();
+		  
+			for (String handle : driver.getWindowHandles()) {                                             
+		    	driver.switchTo().window(handle);
+		    	} 	  
+	 
+			
+			
+			
+	  //Verify if Timestamps are sorted in ascending/descending order on first click
+			WebElement table = driver.findElement(By.xpath("//*[@id='sales_invoice_grid_table']"));
+			List<WebElement> rows = table.findElements(By.tagName("tr"));
+			List<WebElement> columns = rows.get(3).findElements(By.tagName("td"));
+			
+			ArrayList<String> obtainedList = new ArrayList<>();
+			for(int i=1; i<=6 ; i++) {
+				obtainedList.add(columns.get(i).getText());
+			}
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/mm/yy hh:mm:ss a");
+			List<Date> dates = new ArrayList<Date>();
+			
+			for(String d : obtainedList) {
+				try {
+					dates.add(sdf.parse(d));
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+			try {
+				AssertJUnit.assertEquals(Util.checkAsec(dates),true);
+				System.out.println("Date have beem sorted in ascending order");
+			}
+			catch(Exception ex) {
+				System.out.println("Date have not been sorted in ascending order");
+				ex.printStackTrace();
+			}
+			
+			Thread.sleep(4000);
+			driver.findElement(By.xpath("//*[@id='sales_invoice_grid_table']/thead/tr[1]/th[3]/span/a/span")).click();
+			Thread.sleep(4000);
+			
+			WebElement table2 = driver.findElement(By.xpath("//*[@id='sales_invoice_grid_table']"));
+			List<WebElement> rows2 = table2.findElements(By.tagName("tr"));
+			List<WebElement> columns2 = rows2.get(3).findElements(By.tagName("td"));
+			
+			driver.findElement(By.xpath("//*[@id='sales_invoice_grid_table']/thead/tr[1]/th[3]/span/a/span")).click();
+			ArrayList<String> obtainedList2 = new ArrayList<>();
+			for(int i=1; i<=6 ; i++) {
+				obtainedList2.add(columns2.get(i).getText());
+			}
+			
+			SimpleDateFormat sdf2 = new SimpleDateFormat("dd/mm/yy hh:mm:ss a");
+			List<Date> dates2 = new ArrayList<Date>();
+			
+			for(String d : obtainedList2) {
+				try {
+					dates2.add(sdf2.parse(d));
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+			try {
+				AssertJUnit.assertEquals(Util.checkDesc(dates2),true);
+				System.out.println("Dates have beem sorted in descending order");
+			}
+			catch(Exception ex) {
+				System.out.println("Date have not been sorted in descending order");
+				ex.printStackTrace();
+			}
+			
+			
+			
+			
+  }
+  
+  @BeforeMethod
+  public void beforeMethod() {
+	  System.setProperty(Util.DRIVER,Util.CHROMEDRIVER_PATH);
+	  driver = new ChromeDriver();
+	  driver.manage().window().maximize();
+	  driver.manage().timeouts().implicitlyWait(Util.IMPLICIT_WAIT, TimeUnit.SECONDS);
+	  
+  }
+
+  @AfterMethod
+  public void afterMethod() throws InterruptedException {
+	  Thread.sleep(Util.SLEEP_TIME);
+	  driver.quit();
+  }
+
 }
