@@ -1,0 +1,230 @@
+package gu99.eCommerce;
+
+import org.testng.annotations.Test;
+import org.testng.annotations.BeforeMethod;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.Select;
+import org.testng.AssertJUnit;
+import org.testng.annotations.AfterMethod;
+
+public class TestCase15 {
+	static public WebDriver driver = null;
+  @Test
+  public void Test15() {
+	  driver.manage().timeouts().implicitlyWait(Util.IMPLICIT_WAIT, TimeUnit.SECONDS);
+		//navigating to the given URL
+		  driver.navigate().to(Util.BACKENDURL);
+		  
+		//Logging in into the backend page
+		  driver.findElement(By.id("username")).sendKeys(Util.USERNAME);
+		  driver.findElement(By.xpath("//input[@id='login']")).sendKeys(Util.PASSWORD);
+		  driver.findElement(By.xpath("//input[@title='Login']")).click();
+		  
+		//Closing the incoming message
+		  for (String handle : driver.getWindowHandles()) {                                             
+		    	driver.switchTo().window(handle);
+		    	} 	
+		  driver.findElement(By.xpath("//*[@id='message-popup-window']/div[1]/a/span")).click();
+		  
+		//Clicking on Edit for first Customer
+		  driver.findElement(By.xpath("//*[@id='customerGrid_table']/tbody/tr[1]/td[11]/a")).click();
+		  
+		//Clicking on Account Information Tab
+		  driver.findElement(By.xpath(".//*[@id='customer_info_tabs_account']/span")).click();
+		  
+		//Verifying disabled fields
+		  
+		  boolean ATW  = driver.findElement(By.xpath("//select[@id='_accountwebsite_id']")).isEnabled();
+		  boolean CF = driver.findElement(By.xpath("//input[@id='_accountcreated_in']")).isEnabled();
+		  try {
+			  AssertJUnit.assertEquals(ATW, false);
+			  System.out.println("*** Associate to Website dropdownlist is disabled as required ***");
+			  System.out.println();
+		  }
+		  catch(Exception ex) {
+			  ex.printStackTrace();
+		  }
+		  
+		  try {
+			  AssertJUnit.assertEquals(CF, false);
+			  System.out.println("*** Created Form TextBox is disabled as required ***");
+			  System.out.println();
+		  }
+		  catch (Exception e) {
+			  e.printStackTrace();
+		  }
+		  
+		//Verifying Empty fields
+		  
+		  boolean prefix = driver.findElement(By.xpath("//input[@id='_accountprefix']")).getAttribute("value").isEmpty();
+		  boolean suffix = driver.findElement(By.xpath("//input[@id='_accountsuffix']")).getAttribute("value").isEmpty();
+		  boolean DOB = driver.findElement(By.xpath("//input[@id='_accountdob']")).getAttribute("value").isEmpty();
+		  boolean Tax = driver.findElement(By.xpath("//input[@id='_accounttaxvat']")).getAttribute("value").isEmpty();
+		  Select dlGender = new Select(driver.findElement(By.xpath("//select[@id='_accountgender']")));
+		  List<WebElement> lgender = dlGender.getOptions();
+		  int lengnd = lgender.get(0).getText().length();
+		  
+		  try {
+			  AssertJUnit.assertEquals(prefix, true);
+			  System.out.println("*** Prefix Text Box is empty as required ***");
+			  System.out.println();
+			  
+			  AssertJUnit.assertEquals(suffix, true);
+			  System.out.println("*** Suffix Text Box is empty as required ***");
+			  System.out.println();
+			  
+			  AssertJUnit.assertEquals(DOB, true);
+			  System.out.println("*** DOB Text Box is empty as required ***");
+			  System.out.println();
+			  
+			  AssertJUnit.assertEquals(Tax, true);
+			  System.out.println("*** Tax Text Box is empty as required ***");
+			  System.out.println();
+			  
+			  AssertJUnit.assertEquals(lengnd, 0);
+			  System.out.println("*** Gender Dropdownlist is empty by default ***");
+			  System.out.println();
+		  }
+		  
+		  catch(Exception y) {
+			  y.printStackTrace();
+		  }
+  }
+  
+  @BeforeMethod
+  public void beforeMethod() {
+	  System.setProperty(Util.DRIVER,Util.CHROMEDRIVER_PATH);
+	  driver = new ChromeDriver();
+	  driver.manage().window().maximize();
+	  driver.manage().timeouts().implicitlyWait(Util.IMPLICIT_WAIT, TimeUnit.SECONDS);
+  }
+
+  @AfterMethod
+  public void afterMethod() throws InterruptedException {
+	  Thread.sleep(Util.SLEEP_TIME);
+	  driver.quit();
+  }
+
+}
+package gu99.eCommerce;
+
+import org.testng.annotations.Test;
+import org.testng.annotations.BeforeMethod;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.Select;
+import org.testng.AssertJUnit;
+import org.testng.annotations.AfterMethod;
+
+public class TestCase15 {
+	static public WebDriver driver = null;
+  @Test
+  public void Test15() {
+	  driver.manage().timeouts().implicitlyWait(Util.IMPLICIT_WAIT, TimeUnit.SECONDS);
+		//navigating to the given URL
+		  driver.navigate().to(Util.BACKENDURL);
+		  
+		//Logging in into the backend page
+		  driver.findElement(By.id("username")).sendKeys(Util.USERNAME);
+		  driver.findElement(By.xpath("//input[@id='login']")).sendKeys(Util.PASSWORD);
+		  driver.findElement(By.xpath("//input[@title='Login']")).click();
+		  
+		//Closing the incoming message
+		  for (String handle : driver.getWindowHandles()) {                                             
+		    	driver.switchTo().window(handle);
+		    	} 	
+		  driver.findElement(By.xpath("//*[@id='message-popup-window']/div[1]/a/span")).click();
+		  
+		//Clicking on Edit for first Customer
+		  driver.findElement(By.xpath("//*[@id='customerGrid_table']/tbody/tr[1]/td[11]/a")).click();
+		  
+		//Clicking on Account Information Tab
+		  driver.findElement(By.xpath(".//*[@id='customer_info_tabs_account']/span")).click();
+		  
+		//Verifying disabled fields
+		  
+		  boolean ATW  = driver.findElement(By.xpath("//select[@id='_accountwebsite_id']")).isEnabled();
+		  boolean CF = driver.findElement(By.xpath("//input[@id='_accountcreated_in']")).isEnabled();
+		  try {
+			  AssertJUnit.assertEquals(ATW, false);
+			  System.out.println("*** Associate to Website dropdownlist is disabled as required ***");
+			  System.out.println();
+		  }
+		  catch(Exception ex) {
+			  ex.printStackTrace();
+		  }
+		  
+		  try {
+			  AssertJUnit.assertEquals(CF, false);
+			  System.out.println("*** Created Form TextBox is disabled as required ***");
+			  System.out.println();
+		  }
+		  catch (Exception e) {
+			  e.printStackTrace();
+		  }
+		  
+		//Verifying Empty fields
+		  
+		  boolean prefix = driver.findElement(By.xpath("//input[@id='_accountprefix']")).getAttribute("value").isEmpty();
+		  boolean suffix = driver.findElement(By.xpath("//input[@id='_accountsuffix']")).getAttribute("value").isEmpty();
+		  boolean DOB = driver.findElement(By.xpath("//input[@id='_accountdob']")).getAttribute("value").isEmpty();
+		  boolean Tax = driver.findElement(By.xpath("//input[@id='_accounttaxvat']")).getAttribute("value").isEmpty();
+		  Select dlGender = new Select(driver.findElement(By.xpath("//select[@id='_accountgender']")));
+		  List<WebElement> lgender = dlGender.getOptions();
+		  int lengnd = lgender.get(0).getText().length();
+		  
+		  try {
+			  AssertJUnit.assertEquals(prefix, true);
+			  System.out.println("*** Prefix Text Box is empty as required ***");
+			  System.out.println();
+			  
+			  AssertJUnit.assertEquals(suffix, true);
+			  System.out.println("*** Suffix Text Box is empty as required ***");
+			  System.out.println();
+			  
+			  AssertJUnit.assertEquals(DOB, true);
+			  System.out.println("*** DOB Text Box is empty as required ***");
+			  System.out.println();
+			  
+			  AssertJUnit.assertEquals(Tax, true);
+			  System.out.println("*** Tax Text Box is empty as required ***");
+			  System.out.println();
+			  
+			  AssertJUnit.assertEquals(lengnd, 0);
+			  System.out.println("*** Gender Dropdownlist is empty by default ***");
+			  System.out.println();
+		  }
+		  
+		  catch(Exception y) {
+			  y.printStackTrace();
+		  }
+  }
+  
+  @BeforeMethod
+  public void beforeMethod() {
+	  System.setProperty(Util.DRIVER,Util.CHROMEDRIVER_PATH);
+	  driver = new ChromeDriver();
+	  driver.manage().window().maximize();
+	  driver.manage().timeouts().implicitlyWait(Util.IMPLICIT_WAIT, TimeUnit.SECONDS);
+  }
+
+  @AfterMethod
+  public void afterMethod() throws InterruptedException {
+	  Thread.sleep(Util.SLEEP_TIME);
+	  driver.quit();
+  }
+
+}
