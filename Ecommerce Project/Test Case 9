@@ -3,12 +3,13 @@ package gu99.eCommerce;
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeMethod;
 
+import static org.testng.Assert.assertNotEquals;
+
 import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
-import org.testng.AssertJUnit;
 import org.testng.annotations.AfterMethod;
 
 public class TestCase9 {
@@ -52,7 +53,7 @@ public class TestCase9 {
 	  }
 	  
 	  try {
-		  AssertJUnit.assertEquals(originalPrice, newPrice);
+		  assertNotEquals(originalPrice, newPrice);
 		  System.out.println("Valid Discounted amount is not being displayed");
 	  }
 	  
