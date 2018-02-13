@@ -1,93 +1,87 @@
 package guru99.project.selenium;
 
 import org.testng.annotations.Test;
-import java.util.*;
-import jxl.Cell;
-import jxl.Sheet;
-import jxl.Workbook;
-
-import org.testng.annotations.BeforeTest;
-
-import java.io.FileInputStream;
+import jxl.read.biff.BiffException;
+import org.testng.annotations.BeforeMethod;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.testng.annotations.AfterTest;
+import org.testng.annotations.AfterMethod;
 
-public class LoginSection {
+public class SS1 {
+	
 	static public WebDriver driver = null;
+	
   @Test
-  public void VerifyLogin() {
-	  try {
-		  driver.manage().window().maximize();
-		  driver.manage().timeouts().implicitlyWait(Util.WAIT_TIME, TimeUnit.SECONDS);
+  public void LoginSection() throws BiffException, IOException {
+	  //Navigating to the given URL
+	  driver.navigate().to(Util.BASE_URL);  
+	  
+	  String[][] testData = Util.getDataFromExcel(Util.FILE_PATH);
+	  String userName,passWord,actualTitle,actualBoxTitle;
+	  
+	  //Testing for all parameters
+	  
+	  for(int i=0 ; i<testData.length-1 ;i++) {
+		  userName = testData[i][0];
+		  passWord = testData[i][1];
 		  
-		  String FilePath = Util.FILE_PATH;
-		  FileInputStream fs = new FileInputStream(FilePath);
-		  Workbook workbook = Workbook.getWorkbook(fs);
-		  Sheet sheet = workbook.getSheet(0);
+		  //Inputing username
+		  driver.findElement(By.xpath("//input[@name='uid']")).clear();
+		  driver.findElement(By.xpath("//input[@name='uid']")).sendKeys(userName);
 		  
-		  WebElement useridBox = driver.findElement(By.xpath("//input[@name='uid']"));
-		  WebElement pwdBox = driver.findElement(By.xpath("//input[@name='password']"));
-		  WebElement submitBtn = driver.findElement(By.xpath("//input[@name='btnLogin']"));
+		  //Inputting password
+		  driver.findElement(By.xpath("//input[@name='password']")).clear();
+		  driver.findElement(By.xpath("//input[@name='password']")).sendKeys(passWord);
 		  
-		  HashMap<String,String> credentials = new HashMap<String,String>();
-		  credentials.put("xyz123","uparene");
-		  credentials.put("mngr108765","upar789");
-		  credentials.put("mngr108765","uparene");
+		  //Clicking on login button
+		  driver.findElement(By.xpath("//input[@name='btnLogin']")).click();
 		  
-		  for(String userName : credentials.keySet()) {
-			  String password = credentials.get(userName);
-			  useridBox.sendKeys(userName);
-			  pwdBox.sendKeys(password);
-			  submitBtn.click();
+		  try {
+			  Alert alert = driver.switchTo().alert();
+			  actualBoxTitle = alert.getText();
+			  alert.accept();
 			  
-			  if(userName == "xyz123" && password == "uparene" && driver.findElement(By.xpath("//td[@style='color: green']")).isDisplayed()) {
-				  System.out.println("Test Case 1 has failed");
+			  if(actualBoxTitle.contains(Util.EXPECT_ERROR)) {
+				  System.out.println("Test case SS[" + i + "]: Passed");
 			  }
-			  
 			  else {
-				  System.out.println("Test Case 1 has passed");
-			  }
-			  
-			  if(userName == "mngr108765" && password == "upar789" && driver.findElement(By.xpath("//td[@style='color: green']")).isDisplayed()) {
-				  System.out.println("Test Case 2 has failed");
-			  }
-			  
-			  else {
-				  System.out.println("Test Case 2 has passed");
-			  }
-			  
-			  if(userName == "mngr108765" && password == "uparene" && driver.findElement(By.xpath("//td[@style='color: green']")).isDisplayed()) {
-				  System.out.println("Test Case 3 has passed");
-			  }
-			  
-			  else {
-				  System.out.println("Test Case 3 has failed");
+				  System.out.println("Test case SS[" + i + "]: Failed");
 			  }
 		  }
 		  
-	  } 
-	  catch(Exception ex) {
-		  System.out.println("Login failed due to : " + ex.getMessage());
+		  catch(NoAlertPresentException ex) {
+			  actualTitle = driver.getTitle();
+			  if(actualTitle.contains(Util.EXPECTED_TITLE)) {
+				  System.out.println("Test case SS[" + i + "]: Passed");
+			  }
+			  else {
+				  System.out.println("Test case SS[" + i + "]: Failed");
+			  }
+		  }
+		  
 	  }
+				  
 
 	  
-	  
+	 	  
   }
-  @BeforeTest
-  public void beforeTest() {
-	  System.setProperty("webdriver.chrome.driver",Util.CHROME_PATH);
+  
+  @BeforeMethod
+  public void beforeMethod() {
+	  System.setProperty(Util.WEBDRIVER_NAME,Util.CHROME_PATH);
 	  driver = new ChromeDriver();
-	  driver.navigate().to(Util.BASE_URL);
+	  driver.manage().window().maximize();
+	  driver.manage().timeouts().implicitlyWait(Util.WAIT_TIME, TimeUnit.SECONDS);
   }
 
-  @AfterTest
-  public void afterTest() {
-	  driver.close();
+  @AfterMethod
+  public void afterMethod() {
+	  driver.quit();
   }
 
 }
