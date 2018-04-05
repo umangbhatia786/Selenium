@@ -1,0 +1,76 @@
+//This Test Case is to verify that a new Virtual Card is generated successfully and verify it's details
+
+package paymentGateway;
+
+import org.testng.annotations.Test;
+import org.testng.annotations.BeforeMethod;
+
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
+
+public class TestCase1 {
+	public static WebDriver driver = null;
+  @Test
+  public void Test() {
+	  driver.manage().timeouts().implicitlyWait(Utility.IMPLICIT_WAIT, TimeUnit.SECONDS);
+	  
+	  //Clicking on Generate Card Number
+	  driver.findElement(By.xpath("//*[@id='nav']/a[2]")).click();
+	  
+	  //providing driver control to the next tab
+	  for(String handle : driver.getWindowHandles()) {
+		  driver.switchTo().window(handle);
+		  driver.manage().window().maximize();
+	  }
+	
+	  
+	  //Fetching CVV Details
+	  String cvv = driver.findElement(By.xpath("//*[@id='three']/div/h4[2]")).getText().substring(6);
+	  
+	  //Fetching Credit Limit
+	  String creditLimit = driver.findElement(By.xpath("//*[@id='three']/div/h4[4]/span")).getText().substring(1);
+	  
+	  
+	  //Verifying CVV
+	  try {
+		  Assert.assertEquals(cvv.length(), 3);
+		  System.out.println("CVV is of valid length");
+	  }
+	  
+	  catch(Exception exp) {
+		  exp.printStackTrace();
+		  System.out.println("CVV is of invalid length");
+	  }
+	  
+	  //Verifying Credit Limit
+	  try {
+		  Assert.assertEquals(creditLimit, "100.00");
+		  System.out.println("A valid credit limit of $100.00 has been given");
+	  }
+	  catch (Exception e) {
+		  e.printStackTrace();
+		  System.out.println("Invalid credit limit has been given");
+	  }
+	  
+	  
+  }
+   
+  @BeforeMethod
+  public void beforeMethod() {
+	  System.setProperty(Utility.DRIVER,Utility.CHROMEDRIVER_PATH);
+	  driver = new ChromeDriver();
+	  driver.navigate().to(Utility.URL);
+	  driver.manage().window().maximize();
+  }
+
+  @AfterMethod
+  public void afterMethod() {
+	  driver.close();
+  }
+
+}
