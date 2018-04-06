@@ -1,0 +1,88 @@
+//This Test case is to verify that the Card Details generated are working fine and Payment is done succefully
+
+package paymentGateway;
+
+import static org.junit.Assert.*;
+
+import java.util.concurrent.TimeUnit;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.Select;
+
+public class TestCase2 {
+	public static WebDriver driver = null;
+	@Test
+	public void test() {
+		driver.manage().timeouts().implicitlyWait(Util.IMPLICIT_WAIT, TimeUnit.SECONDS);
+		
+		//Clicking on Generate Card
+		driver.findElement(By.xpath("//*[@id='nav']/a[2]")).click();
+		
+		//navigating to next tab
+		for(String handle : driver.getWindowHandles()) {
+			driver.switchTo().window(handle);
+			driver.manage().window().maximize();
+		}
+		
+		//Fetching Card Number
+		String cardNumber = driver.findElement(By.xpath("/html/body[@class='subpage']/section[@id='three']/div[@class='inner']/h4[1]")).getText().substring(14);
+		System.out.println(cardNumber);
+		
+		//Fetching CVV
+		String cvv = driver.findElement(By.xpath("//*[@id='three']/div/h4[2]")).getText().substring(6);
+		System.out.println(cvv);
+		
+		//Fetching expiry month and year
+		String month = driver.findElement(By.xpath("/html/body[@class='subpage']/section[@id='three']/div[@class='inner']/h4[3]")).getText().substring(6,8);
+		System.out.println(month);
+		
+		String year = driver.findElement(By.xpath("/html/body[@class='subpage']/section[@id='three']/div[@class='inner']/h4[3]")).getText().substring(9);
+		System.out.println(year);
+		
+		//Clicking on Cart again
+		driver.findElement(By.linkText("Cart")).click();
+		
+		//Choosing quantity
+		Select dlQuantity = new Select(driver.findElement(By.name("quantity")));
+		dlQuantity.selectByValue("3");
+		
+		//Clicking on Buy Now
+		driver.findElement(By.xpath("/html/body[@class='subpage']/section[@id='three']/div[@class='inner']/form/div[@class='row']/div[@class='3u 12u$(small)']/ul[@class='actions']/li/input[@class='button special']")).click();
+		
+		//Giving Card Details and making Payment
+		driver.findElement(By.name("card_nmuber")).sendKeys(cardNumber);
+		
+		Select dlMonth = new Select(driver.findElement(By.name("month")));
+		dlMonth.selectByVisibleText(month);
+		
+		Select dlYear = new Select(driver.findElement(By.name("year")));
+		dlYear.selectByVisibleText(year);
+		
+		driver.findElement(By.name("cvv_code")).sendKeys(cvv);
+		driver.findElement(By.name("submit")).click();
+		
+		//Print out the Order ID generated
+		String orderID = driver.findElement(By.xpath("/html/body[@class='subpage']/section[@id='three']/div[@class='inner']/div[@class='table-wrapper']/table[@class='alt access']/tbody/tr[1]/td[2]/h3/strong")).getText();
+		System.out.println("Order ID of the newly generated order is : " + orderID);
+		
+	}
+	
+	@Before
+	public void beforeMethod(){
+		System.setProperty(Util.DRIVER_TYPE, Util.DRIVER_PATH);
+		driver = new ChromeDriver();
+		driver.navigate().to(Util.URL);
+		driver.manage().window().maximize();
+	}
+	
+	@After
+	public void afterMethod() {
+		driver.close();
+	}
+
+}
