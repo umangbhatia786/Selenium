@@ -5,6 +5,7 @@ public class Util {
 	public static final String DRIVER_PATH = "C:\\UBS\\Dev\\Selenium\\chromedriver.exe";
 	public static final int IMPLICIT_WAIT = 20;
 	public static final String URL = "http://demo.guru99.com/payment-gateway/index.php";
+	public static final String QUANTITY_VALUE = "3";
 	
 	
 }
