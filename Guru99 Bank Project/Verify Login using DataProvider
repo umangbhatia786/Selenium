@@ -1,21 +1,19 @@
-package Expensing;
+package guru99.project.selenium;
 
-import org.testng.annotations.Test;
-
-　
-import org.testng.annotations.BeforeTest;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
 import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 
-public class TestCase1 {
+public class TestUsingDataProvider {
 	public static WebDriver driver = null;
-  @Test(dataProvider = "getInputData")
+  @Test(dataProvider= "getInputData")
   public void Test(String username, String password) {
 	  driver.findElement(By.xpath("//input[@name='uid']")).clear();
 	  driver.findElement(By.xpath("//input[@name='uid']")).sendKeys(username);
@@ -40,32 +38,29 @@ public class TestCase1 {
 	  			  Assert.assertEquals(actualTitle, Util.EXPECTED_TITLE);
 	  			   
 	  		  } 
-
   }
   
   @BeforeTest
-  public void beforeTest() {
-	  	System.setProperty(Util.DRIVER_TYPE,Util.DRIVER_PATH);
-		driver = new InternetExplorerDriver();
+  public void setup() {
+	  	System.setProperty(Util.WEBDRIVER_NAME,Util.CHROME_PATH);
+		driver = new ChromeDriver();
 		driver.manage().window().maximize();
-		driver.navigate().to(Util.URL);
+		driver.navigate().to(Util.BASE_URL);
   }
-
   @AfterTest
-  public void afterTest() {
-	  driver.close();
+  public void closeDriver() {
+	  	driver.quit();
   }
   
-  @DataProvider(name = "getInputData") 
-  public Object[][] inputData() {
+  @DataProvider(name="getInputData")
+  public Object[][] getcrdentials() {
 	  return new Object[][] {
-		  {Util.USERNAME,Util.PASSWORD},
-		  {Util.INVALID_USERNAME,Util.PASSWORD},
-		  {Util.USERNAME,Util.INVLAID_PASSWORD},
-		  {Util.INVALID_USERNAME,Util.INVLAID_PASSWORD}
+		  {Util.USER_NAME,Util.PASSWORD},
+		  {Util.USER_NAME,"Invalid"},
+		  {"Invalid",Util.PASSWORD},
+		  {"Invalid1","Invalid2"}
 	  };
   }
-	  
-  }
-
-　
+  
+  
+}
