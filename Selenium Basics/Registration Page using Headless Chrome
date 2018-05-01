@@ -1,0 +1,68 @@
+package com.selenium.com.selenium.practise;
+
+import org.testng.annotations.Test;
+import org.testng.annotations.BeforeTest;
+
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.Select;
+import org.testng.Assert;
+import org.testng.annotations.AfterTest;
+
+public class RegisterPageWithHTMLUnitDriver {
+	public static WebDriver driver = null;
+  @Test
+  public void Test() {
+	  driver.manage().timeouts().implicitlyWait(20,TimeUnit.SECONDS);
+	  
+	  driver.findElement(By.xpath("//input[@name='firstName']")).sendKeys("Umang");
+	  driver.findElement(By.xpath("//input[@name='lastName']")).sendKeys("Bhatia");
+	  driver.findElement(By.xpath("//input[@name='phone']")).sendKeys("9538898365");
+	  driver.findElement(By.xpath("//input[@id='userName']")).sendKeys("umangbhatia786@gmail.com");
+	  driver.findElement(By.xpath("//input[@name='address1']")).sendKeys("154/10, Vijay Nagar");
+	  driver.findElement(By.xpath("//input[@name='city']")).sendKeys("Kanpur");
+	  driver.findElement(By.xpath("//input[@name='state']")).sendKeys("Uttar Pradesh");
+	  driver.findElement(By.xpath("//input[@name='postalCode']")).sendKeys("411057");
+	  Select drpCountry = new Select(driver.findElement(By.name("country")));
+	  drpCountry.selectByVisibleText("INDIA");
+	  driver.findElement(By.xpath("//input[@id='email']")).sendKeys("umang.bhatia2508");
+	  driver.findElement(By.xpath("//input[@name='password']")).sendKeys("chloroplast16");
+	  driver.findElement(By.xpath("//input[@name='confirmPassword']")).sendKeys("chloroplast16");
+	  driver.findElement(By.xpath("//input[@name='submit']")).click();
+	  
+	  WebElement regText = driver.findElement(By.xpath("html/body/div[1]/table/tbody/tr/td[2]/table/tbody/tr[4]/td/table/tbody/tr/td[2]/table/tbody/tr[3]/td/p[3]/a/font/b"));
+	  
+	  
+	  try {
+		  Assert.assertEquals(regText.isDisplayed(),true);
+		  System.out.println("Registered Successfully!");
+	  }
+	  catch(Exception ex) {
+		  ex.printStackTrace();
+	  }
+
+	
+  }
+  @BeforeTest
+  public void beforeTest() {
+	  System.setProperty(Util.DRIVER,Util.DRIVER_PATH);
+	  ChromeOptions options = new ChromeOptions();
+	  options.addArguments("headless");
+	  options.addArguments("window-size=1200x600");
+	  
+	  driver = new ChromeDriver(options);
+	  driver.navigate().to("http://demo.guru99.com/selenium/newtours/register.php");
+
+  }
+
+  @AfterTest
+  public void afterTest() {
+	  driver.quit();
+  }
+
+}
